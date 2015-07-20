@@ -983,6 +983,8 @@ int main(int argc, char* argv[])
 
     TestSecondLoop();
     //TestSecondLoopAndFirstLoopOneRound();
+
+	// Let's try to add something here...
     
 	Forward2(input,output,confusion,diffusion);
 
