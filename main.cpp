@@ -21,8 +21,9 @@ std::unordered_set<u8> *confusion_values = nullptr;
 
 u8 input[32]={
 //change only this :
-0x66,0xd5,0x4e,0x28,0x5f,0xff,0x6b,0x53,0xac,0x3b,0x34,0x14,0xb5,0x3c,0xb2,0xc6,
-0xa4,0x85,0x1e,0x0d,0x86,0xc7,0x4f,0xba,0x75,0x5e,0xcb,0xc3,0x6e,0x48,0x79,0x8f
+/*0x66,0xd5,0x4e,0x28,0x5f,0xff,0x6b,0x53,0xac,0x3b,0x34,0x14,0xb5,0x3c,0xb2,0xc6,
+0xa4,0x85,0x1e,0x0d,0x86,0xc7,0x4f,0xba,0x75,0x5e,0xcb,0xc3,0x6e,0x48,0x79,0x8f*/
+99,0,81,1,17,0,80,0,228,1,24,1,35,3,188,0,19,1,85,0,241,2,95,0,59,0,105,0,23,0,91,0
 //
 };
 
@@ -921,6 +922,91 @@ void TestSecondLoopAndFirstLoopOneRound()
     }
 }
 
+void JustTryThis()
+{
+	u8 in[32];
+	for(unsigned int i = 0 ; i < 32 ; ++i) in[i] = 1;
+	
+	for(unsigned int i = 0 ; i < 256 ; ++i)
+	{
+		/*if(i < 32)
+			in[i] = 1;
+		else
+			in[i - 32] = 0;
+			 */
+		in[2] = i;
+		u8 out[32];
+		Forward2(in, out, confusion, diffusion);
+		for(unsigned int j = 0 ; j < 32 ; ++j) { std::cout << (unsigned int)in[j] << ","; }
+		std::cout << "=>";
+		for(unsigned int j = 0 ; j < 16 ; ++j) { std::cout << (unsigned int)out[j] << ";"; }
+		std::cout << std::endl;
+		
+	}		
+}
+
+void CanYouBelieveIt(u8 targ[32])
+{
+	u8 in[32];
+	for(unsigned int i = 0 ; i < 32 ; ++i) in[i] = 0;
+	bool final_match = true;
+	
+	unsigned int final = /*16*/ 2; // Biggest OK: 1
+	for(unsigned int i = 0 ; i < final ; ++i)
+	{
+		bool matched = false;
+		for(unsigned long long j = 0 ; j < 256*256 ; ++j)
+		{
+			u8 j1 = j % 256;
+			u8 j2 = j / 256;
+			
+				std::cout << "j=" << j << ",j1=" << (unsigned int) j1  << ",j2=" << (unsigned int) j2 << std::endl;
+				
+			u8 out[32];
+			in[2*i] = j1;
+			in[(2*i)+1] = j2;
+			Forward2(in, out, confusion, diffusion);
+			if(out[i] == targ[i])
+			{
+				bool sub_matches = true;
+				for(unsigned int k = 0 ; k < i ; ++k)
+				{
+					if(out[k] != targ[k])
+					{
+						sub_matches = false;
+						break;
+					}
+				}
+				
+				if(sub_matches)
+				{
+					matched = true;
+					break;
+				}
+			}
+		}
+		
+		if(!matched)
+		{
+			std::cout << "No match found at i=" << i << std::endl;
+			final_match = false;
+			break;
+		}
+	}
+	
+	if(final_match)
+	{
+		std::cout << "And the finalist is:" << std::endl;
+		for(unsigned int i = 0 ; i < 32 ; ++i)
+		{
+			std::cout << (unsigned int) in[i] << ",";
+		}
+		std::cout << std::endl;
+	}
+	
+	
+	std::cout << "Finished" << std::endl;
+}
 
 int main(int argc, char* argv[])
 {
@@ -981,12 +1067,14 @@ int main(int argc, char* argv[])
     // Ongoing...
 	//ReverseOneRoundPlusSecondLoop_Test(input);
 
-    TestSecondLoop();
+    //TestSecondLoop();
     //TestSecondLoopAndFirstLoopOneRound();
 
 	// Let's try to add something here...
+	//JustTryThis();
+	CanYouBelieveIt(target);
     
-	Forward2(input,output,confusion,diffusion);
+	//Forward(input,output,confusion,diffusion);
 
     int exitCode = memcmp(output,target,16);
     std::cout << "exit code: " << exitCode << std::endl;
