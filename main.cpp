@@ -21,9 +21,9 @@ std::unordered_set<u8> *confusion_values = nullptr;
 
 u8 input[32]={
 //change only this :
-/*0x66,0xd5,0x4e,0x28,0x5f,0xff,0x6b,0x53,0xac,0x3b,0x34,0x14,0xb5,0x3c,0xb2,0xc6,
-0xa4,0x85,0x1e,0x0d,0x86,0xc7,0x4f,0xba,0x75,0x5e,0xcb,0xc3,0x6e,0x48,0x79,0x8f*/
-99,0,81,1,17,0,80,0,228,1,24,1,35,3,188,0,19,1,85,0,241,2,95,0,59,0,105,0,23,0,91,0
+0x66,0xd5,0x4e,0x28,0x5f,0xff,0x6b,0x53,0xac,0x3b,0x34,0x14,0xb5,0x3c,0xb2,0xc6,
+0xa4,0x85,0x1e,0x0d,0x86,0xc7,0x4f,0xba,0x75,0x5e,0xcb,0xc3,0x6e,0x48,0x79,0x8f
+//99,0,81,1,17,0,80,0,228,1,24,1,35,3,188,0,19,1,85,0,241,2,95,0,59,0,105,0,23,0,91,0 // NOK
 //
 };
 
@@ -1008,6 +1008,23 @@ void CanYouBelieveIt(u8 targ[32])
 	std::cout << "Finished" << std::endl;
 }
 
+u8 ApplyConf(u8 in, unsigned int nbApplications)
+{
+	for(unsigned int i = 0 ; i < nbApplications ; ++i)
+	{
+		in = confusion[in];
+	}
+	
+	return in;
+}
+
+void SomeOtherTests()
+{
+	u8 in = 0;
+	unsigned int nb = 256;
+	std::cout << "ApplyConf(" << (unsigned int)in << "," << nb << ")=" << (unsigned int) ApplyConf(in,nb) << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
 	u8 target[]="Hire me!!!!!!!!";
@@ -1072,9 +1089,17 @@ int main(int argc, char* argv[])
 
 	// Let's try to add something here...
 	//JustTryThis();
-	CanYouBelieveIt(target);
-    
-	//Forward(input,output,confusion,diffusion);
+	//CanYouBelieveIt(target);
+	//SomeOtherTests();
+	u8 in[32] = {
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0
+		};
+	Forward2(in,output,confusion,diffusion);
+	
+	//Forward2(input,output,confusion,diffusion);
 
     int exitCode = memcmp(output,target,16);
     std::cout << "exit code: " << exitCode << std::endl;
