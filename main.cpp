@@ -277,7 +277,7 @@ void StudyConfusion()
 
     auto mappedNumbers = std::unordered_map<u32, u32>(); // map a number i with the number of different values in confusion which are mapped i times
     
-    for(u32 i = 0 ; i < 512 ; ++i)
+    for(u32 i = 0 ; i < /*512*/256 ; ++i)
     {        
         auto key = confusion[i];
         auto value = i;
@@ -293,16 +293,18 @@ void StudyConfusion()
     {
         if(mapB.find(i) == mapB.cend())
         {
-            std::cout << "Value not mapped by confusion: " << i << std::endl;
+            std::cout << "Value not mapped by confusion: " << i << "\t";
+            for(int j = 7 ; j >= 0 ; --j) {std::cout << ((i>>j)&1) << " ";} std::cout << std::endl;
             (mappedNumbers[0])++;
         }
         else
         {
             auto vectorSize = (mapB[i]).size();
             (mappedNumbers[vectorSize])++;
-            if(vectorSize == 4)
+            if(vectorSize == 2)
             {
-                std::cout << "Value mapped 4 times: " << i << std::endl;
+                std::cout << "Value mapped 2 times in confuz: " << i << "\t";
+                for(int j = 7 ; j >= 0 ; --j) {std::cout << ((i>>j)&1) << " ";} std::cout << std::endl;
             }
         }
     }
@@ -1025,12 +1027,36 @@ void SomeOtherTests()
 	std::cout << "ApplyConf(" << (unsigned int)in << "," << nb << ")=" << (unsigned int) ApplyConf(in,nb) << std::endl;
 }
 
+void StudyConfusionAgain()
+{
+    unsigned long maxLen = 0;
+    
+    for(unsigned int i = 0 ; i < 256 ; ++i)
+    {
+        u8 cur = i;
+        unsigned long len = 0;
+        do
+        {
+            cur = confusion[cur];
+            ++len;
+        } while(cur != i && len < 256);
+        std::cout << "len[" << i << "]=" << len << std::endl;
+        if(maxLen == 0 || len < maxLen)
+        {
+            maxLen = len;
+        }
+    }
+    
+    std::cout << "maxLen=" << maxLen << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
 	u8 target[]="Hire me!!!!!!!!";
 	u8 output[32];
 
     //StudyConfusion();
+    StudyConfusionAgain();
     
     /*u8 tgt = '!';
     auto res = FindIndicesOfConfusionForTarget(tgt);
@@ -1091,13 +1117,13 @@ int main(int argc, char* argv[])
 	//JustTryThis();
 	//CanYouBelieveIt(target);
 	//SomeOtherTests();
-	u8 in[32] = {
+	/*u8 in[32] = {
 		0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0
 		};
-	Forward2(in,output,confusion,diffusion);
+	Forward2(in,output,confusion,diffusion);*/
 	
 	//Forward2(input,output,confusion,diffusion);
 
