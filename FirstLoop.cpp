@@ -85,25 +85,38 @@ void FirstLoop::ReverseSingleOneSolutionOnly(u8 target[32], u8 solution[32])
 // - ...
 // - solutions[i] = list of possible u8's for character at position i in a solution to the reverse problem
 // - then, we need, again similarly to SecondLoop, a method to init an iterator over solutions + a method to get next solution
-void FirstLoop::ReverseSingleAllSolutions(u8 target[32], std::vector<std::vector<u8>>& solutions)
+bool FirstLoop::ReverseSingleAllSolutions(u8 target[32], std::vector<std::vector<u8>>& solutions)
 {
     solutions.clear();
     
     auto deducted_intermediate_vec = std::vector<u8>(32, 0);
-	SolveSystemForU8s(target, deducted_intermediate_vec);
+	
+	if(!SolveSystemForU8s(target, deducted_intermediate_vec))
+	{
+		return false;
+	}
 	
 	u8 deducted_intermediate[32]; for(unsigned int i = 0 ; i < 32 ; ++i) deducted_intermediate[i] = deducted_intermediate_vec[i];
 	
 	for(unsigned i = 0 ; i < 32; ++i)
 	{
-        solutions.push_back(std::vector<u8>());
+		solutions.push_back(std::vector<u8>());
+		
+		bool found = false;
+		
         // Although there are 512 values in confusion, we only look at the ones whose index can fit on a u8 because this is the size of any solution input
 		for(unsigned int j = 0 ; j < 256 ; ++j)
 		{
 			if(confusion[j] == deducted_intermediate[i])
 			{
+				found = true;
 				solutions[i].push_back((u8)j);
 			}
+		}
+		
+		if(!found)
+		{
+			return false;
 		}
 	}
 }

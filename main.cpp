@@ -303,8 +303,8 @@ void StudyConfusion()
             (mappedNumbers[vectorSize])++;
             if(vectorSize == 2)
             {
-                std::cout << "Value mapped 2 times in confuz: " << i << "\t";
-                for(int j = 7 ; j >= 0 ; --j) {std::cout << ((i>>j)&1) << " ";} std::cout << std::endl;
+                /*std::cout << "Value mapped 2 times in confuz: " << i << "\t";
+                for(int j = 7 ; j >= 0 ; --j) {std::cout << ((i>>j)&1) << " ";} std::cout << std::endl;*/
             }
         }
     }
@@ -1055,8 +1055,8 @@ int main(int argc, char* argv[])
 	u8 target[]="Hire me!!!!!!!!";
 	u8 output[32];
 
-    //StudyConfusion();
-    StudyConfusionAgain();
+    StudyConfusion();
+    //StudyConfusionAgain();
     
     /*u8 tgt = '!';
     auto res = FindIndicesOfConfusionForTarget(tgt);
